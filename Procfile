@@ -1,1 +1,1 @@
-web gunicorn rbh-mtd-api:app
+web gunicorn rb-mtd:app

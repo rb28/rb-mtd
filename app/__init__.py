@@ -5,6 +5,7 @@
 import os
 from flask import Flask,  current_app
 from config import app_config
+from .extensions import db, login, migrate, bcrypt
 
 
 def create_app(config_name):
@@ -19,11 +20,9 @@ def register_extensions(app):
     """Register Flask extensions."""
     db.init_app(app)
     login.init_app(app)
-    mail.init_app(app)
     migrate.init_app(app, db)
-    moment.init_app(app)
     bcrypt.init_app(app)
-    admin.init_app(app)
+    
     return None
 
 

@@ -37,6 +37,9 @@ def register_blueprints(app):
     from app.main import bp as main_bp
     app.register_blueprint(main_bp, url_prefix = '/main')
 
+    from app.api import bp as api_bp
+    app.register_blueprint(api_bp, url_prefix = '/api')
+
     return None
 
 

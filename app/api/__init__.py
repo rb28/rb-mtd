@@ -1,5 +1,3 @@
-from flask import Blueprint
-
-bp = Blueprint('api', __name__)
-
-from app.api import routes
+from app.api.vat.endpoints import returns
+from app.api.vat.endpoints import liabilities
+from app.api.vat.endpoints import obligations

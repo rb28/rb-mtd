@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ title }}</title>
+</head>
+<body>
+	<h2>
+		HMRC Authorization Token
+	</h2>
+	<hr>
+	{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		<ul>
+			{% for message in messages %}
+				<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+	{% endwith %}
+	<form action="" method="post">
+		{{ form.hidden_tag() }}
+		<p>
+			{{ form.token.label }}<br>
+			{{ form.token(size=50, value=access_token) }}
+		</p>
+
+		<p>{{ form.submit() }}</p>
+	</form>
+
+</body>
+</html>

@@ -126,3 +126,80 @@ def load_user(id):
 
 
 
+class Organisation(SurrogatePK, Model):
+    """docstring for ClassName"""
+    __tablename__ = 'organisations'
+
+    code = Column(db.String(3), unique=True, nullable=False)
+    vrn = Column(db.String(9), unique=True)
+    name = Column(db.String(50), unique=True)
+
+    
+
+    def __init__(self, code, **kwargs):
+        db.Model.__init__(self, code=code, **kwargs)
+        
+        
+
+
+class Vat_return(SurrogatePK, Model):
+
+    __tablename__ = 'vat_returns'
+
+    organisation_id = reference_col('organisation')
+    organisation = relationship('Organisation', backref='vat_returns')
+
+    start = Column(db.DateTime)
+    end = Column(db.DateTime)
+    period_key = Column(db.String(4))
+    vat_due_sales = Column(db.Numeric(10,2))
+    vat_due_acquisitions = Column(db.Numeric(10,2))
+    total_vat_due = Column(db.Numeric(10,2))
+    vat_reclaimed_curr_period = Column(db.Numeric(10,2))
+    net_vat_due = Column(db.Numeric(10,2))
+    total_value_sales_ex_vat = Column(db.Numeric(10,2))
+    total_value_purchases_ex_vat = Column(db.Numeric(10,2))
+    total_value_goods_supplied_ex_vat = Column(db.Numeric(10,2))
+    total_value_acquisitions_ex_vat = Column(db.Numeric(10,2))
+    finalised = Column(db.Boolean())
+
+    def __init__(self, code, **kwargs):
+        db.Model.__init__(self, code=code, **kwargs)
+
+
+
+class Vat_obligation(SurrogatePK, Model):
+
+    __tablename__ = 'vat_obligations'
+
+    organisation_id = reference_col('organisation')
+    organisation = relationship('Organisation', backref='vat_obligations')
+
+    start_date = Column(db.DateTime, nullable=False)
+    end_date = Column(db.DateTime, nullable=False)
+    due_date = Column(db.DateTime, nullable=False)
+    status = Column(db.String(1), nullable=False)
+    period_key = Column(db.String(4))
+    received_date = Column(db.DateTime, nullable=True)
+
+    def __init__(self, start_date, **kwargs):
+        db.Model.__init__(self, start_date=start_date, **kwargs)
+
+
+
+class Vat_liability(SurrogatePK, Model):
+
+    __tablename__ = 'vat_liabilities'
+
+    organisation_id = reference_col('organisation')
+    organisation = relationship('Organisation', backref='vat_liabilities')
+
+    period_from = Column(db.DateTime, nullable=False)
+    period_to = Column(db.DateTime, nullable=False)
+    charge_type = Column(db.String(3), nullable=False)
+    original_amount = Column(db.Numeric(10,2), nullable=False)
+    outstanding_amount = Column(db.Numeric(10,2))
+    due = Column(db.DateTime)
+
+    def __init__(self, period_from, **kwargs):
+        db.Model.__init__(self, period_from=period_from, **kwargs)

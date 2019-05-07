@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ title }}</title>
+</head>
+<body>
+	<h2>
+		HMRC OAuth Code
+	</h2>
+	<form action="" method="post">
+		{{ form.hidden_tag() }}
+		<p>
+			{{ form.auth_id.label }}<br>
+			{{ form.auth_id(size=32, value=auth_id) }}
+		</p>
+
+		<p>{{ form.submit() }}</p>
+	</form>
+</body>
+</html>

@@ -11,7 +11,7 @@ class OAuthForm(FlaskForm):
 
 class RedirectForm(FlaskForm):
     code = StringField('Authorization Code' , validators = [DataRequired()])
-    submit = SubmitField('Request Access Token')
+    submit = SubmitField('Get Access Token')
 
 
 class TokenForm(FlaskForm):
@@ -23,3 +23,5 @@ class TokenForm(FlaskForm):
     submit = SubmitField('Save')
 
 
+class TestForm(FlaskForm):
+    submit = SubmitField('Redirect')

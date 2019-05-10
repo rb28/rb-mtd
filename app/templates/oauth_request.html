@@ -5,8 +5,18 @@
 </head>
 <body>
 	<h2>
-		HMRC OAuth Code
+		Step 1: Request Authorisation
 	</h2>
+	<hr>
+	{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		<ul>
+			{% for message in messages %}
+				<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+	{% endwith %}
 	<form action="" method="post">
 		{{ form.hidden_tag() }}
 		<p>

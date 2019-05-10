@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ title }}</title>
+</head>
+<body>
+	<h2>
+		Step 2: Retrieve Authorization Code
+	</h2>
+	<hr>
+	<form action="" method="post">
+		{{ form.hidden_tag() }}
+		<p>
+			{{ form.code.label }}<br>
+			{{ form.code(size=32, value=code) }}
+		</p>
+
+		<p>{{ form.submit() }}</p>
+	</form>
+</body>
+</html>

@@ -4,8 +4,9 @@ import webbrowser
 from urllib.parse import urlparse, parse_qs
 from flask import flash, render_template, redirect, url_for
 from app.main import bp
-from app.main.forms import OAuthForm, TokenForm
+from app.main.forms import OAuthForm, TokenForm, RedirectForm, TestForm
 from flask import session
+from flask import request
 
 
 @bp.route('/index')
@@ -13,8 +14,6 @@ from flask import session
 def home():
 
     return render_template('/index.html')
-
-
 
 
 
@@ -57,7 +56,7 @@ def requestoauth():
     
     scope = 'read:vat+write:vat'
     state = 'Success'
-    redirectUri = 'https://www.example.com/auth-redirect'
+    redirectUri = 'http://localhost:5000/auth-redirect'                          #'https://www.example.com/auth-redirect'
     
     response = requests.get(request_url,
                 headers={'Accept': 'application/vnd.hmrc.1.0+json'},
@@ -69,10 +68,12 @@ def requestoauth():
                         }
                 )
 
+
     if response.status_code != 200:
-        flash("ERROR: OAuth request unsuccessful.")
+        flash("ERROR: OAuth request unsuccessful. %d: %s" %{response.status_code, response.error_description})
         auth_id = ''
         return render_template( 'oauth_request.html', title='MTD-OAuth', form=form, auth_id=auth_id)
+    
 
     url = response.url
     o = urlparse(url)
@@ -80,69 +81,104 @@ def requestoauth():
     auth_id = q['auth_id'][0]
     
     
-
     if form.validate_on_submit():
         auth_id = form.auth_id.data
-        session['AUTH_ID'] = auth_id     
-        
+        webbrowser.open_new_tab(url)
     
-    chrome_path = 'C:/Program Files (x86)/Google/Application/chrome.exe %s'
-    webbrowser.get(chrome_path).open_new_tab(url)
-
-    return render_template( 'oauth_request.html', title='MTD-OAuth', form=form, auth_id=auth_id)
+   
+    return render_template('oauth_request.html', title='MTD-OAuth', form=form, auth_id=auth_id)
 
 
 
-@bp.route('/auth-redirect/<string:code>', methods={'GET','POST'})
-def authredirect(code):
+@bp.route('/auth-redirect', methods={'GET','POST'})
+def oauth_redirect():
     
     form = RedirectForm()
-    auth_id = session.get('AUTH_ID')
-    auth_code = code
+    code = request.args.get('code')
     
+   
     if form.validate_on_submit():
-        return redirect('/exchange', auth_code=auth_code) 
+        code = form.code.data
+        return redirect(url_for('main.exchange_authcode', code=code) )
 
     
-    return render_template('auth_redirect.html', title='Auth Code', auth_code = auth_code)
+    return render_template('oauth_redirect.html', title='Auth Code', form=form, code = code)
 
 
 
-@bp.route('/exchange/<string:auth_code>', methods=['GET','POST'])
-def exchange_authcode(auth_id, auth_code):
+@bp.route('/exchange/<code>', methods=['GET','POST'])
+def exchange_authcode(code):
     
     form = TokenForm()
+
     
     clientId = '7vHS_1WzmOZ4xESM5j7UB85lY2Ua'
     clientSecret = '7743c54a-eaee-4ff8-85da-5155b0c851c0'
-    authId = auth_id = session.get('AUTH_ID')
-    code = auth_code
-
-    grantType = 'authorization_code'
-    headers = {'Content-Type': 'application/x-www-form-urlencoded','code': authId, 'grant_type': grantType}
     
-    redirectUri = 'https://www.example.com/auth-redirect'
-    access_token_url = 'https://test-api.service.hmrc.gov.uk/oauth/token'
-    payload = {'grant_type': grantType
-               'client_id': clientId,
-               'client_secret': clientSecret, 
-               'redirect_uri': redirectUri,
-               'code': code
-               }
 
-    access_token_request = requests.post(access_token_url,  data=json.dumps(payload))
+     
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    
+    redirectUri = 'http://localhost:5000/auth-redirect'
+    access_token_url = 'https://test-api.service.hmrc.gov.uk/oauth/token'
+
+    payload = {"grant_type": "authorization_code",
+               "client_id": clientId,
+               "client_secret": clientSecret, 
+               "redirect_uri": redirectUri,
+               "code": code
+              }
+
+    access_token_request = requests.post(access_token_url, data=payload)
     access_token = access_token_request.json()
 
     if access_token_request.status_code != 200:
-            flash('Exception: {} - {}'.format(access_token['error'], access_token['error_description']))
+              
+            flash('{}: {} - {}'.format(access_token_request.status_code, access_token['error'], access_token['error_description']))
             access_token = ''
-
-    if form.validate_on_submit():
+            return render_template('access_token.html', title='MTD-OAuth', form=form, access_token=access_token)
+    #if form.validate_on_submit():
         
-        token = form.token.data
-        return render_template('')
+    #    token = form.token.data
+    #    return render_template('')
     
     return render_template('access_token.html', title='MTD-OAuth', form=form, access_token=access_token)
 
 #test org userid: 843628495777
 #test org password: qfryqgVborki
+# access token: 536e6181972ead3fd4dd374ac687227
+# refresh token: 5e4b9b2772a39742205b4cc92c2bd58
+
+
+
+@bp.route('/retrieve/obligations', methods=['GET','POST'])
+def vat_obligations():
+    base_url = 'https://test-api.service.hmrc.gov.uk'
+    endpoint = ''    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@bp.route('/test', methods=['GET','POST'])
+def test():
+    form = TestForm()
+    new = 1
+    url = 'http://docs.python.org/library/webbrowser.html'
+    chrome_path = '"C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe" %s'
+    if form.validate_on_submit():
+        webbrowser.get(chrome_path).open(url, new=new)
+
+    return render_template('test.html', title='TEST', form=form)

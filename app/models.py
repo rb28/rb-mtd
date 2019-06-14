@@ -2,6 +2,7 @@
 """User models."""
 import datetime as dt
 import jwt
+import uuid
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.database import Column, Model, SurrogatePK, db, reference_col, relationship, login
@@ -38,6 +39,7 @@ class User(UserMixin, SurrogatePK, Model):
     """A user of the app."""
 
     __tablename__ = 'users'
+    uuid = Column(db.String(36), unique=True, nullable=False)
     username = Column(db.String(80), unique=True, nullable=False)
     email = Column(db.String(80), unique=True, nullable=False)
     #: The hashed password
@@ -53,6 +55,7 @@ class User(UserMixin, SurrogatePK, Model):
     def __init__(self, username, email, password=None, **kwargs):
         """Create instance."""
         db.Model.__init__(self, username=username, email=email, **kwargs)
+        self.uuid = str(uuid.uuid4())
         if password:
             self.set_password(password)
         else:
@@ -129,14 +132,15 @@ def load_user(id):
 class Organisation(SurrogatePK, Model):
     """docstring for ClassName"""
     __tablename__ = 'organisations'
-
+    
+    uuid = Column(db.String(36), unique=True, nullable =False )
     code = Column(db.String(3), unique=True, nullable=False)
     vrn = Column(db.String(9), unique=True)
     name = Column(db.String(50), unique=True)
 
     
-
     def __init__(self, code, **kwargs):
+        self.uuid = str(uuid.uuid4())
         db.Model.__init__(self, code=code, **kwargs)
         
         
@@ -203,3 +207,6 @@ class Vat_liability(SurrogatePK, Model):
 
     def __init__(self, period_from, **kwargs):
         db.Model.__init__(self, period_from=period_from, **kwargs)
+
+
+

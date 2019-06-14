@@ -1,0 +1,97 @@
+{% extends "layouts/main_base.html" %}
+
+{% block title %}title{% endblock %}
+
+{% block sidenav %}  
+	  
+{% endblock %}
+
+{% block header %}Test{% endblock %}
+
+{% block content %}
+<h2>VAT Obligations</h2>
+<p>The .table-bordered class adds borders to a table:</p>  
+
+	<form class="form-inline" action="">
+
+        <div class="form-group">
+        	<label for="datepicker1">From: </label> 
+            <div class='input-group date' id='datepicker1'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+        	<label for="datepicker2">&nbsp To: </label>
+            <div class='input-group date' id='datepicker2'>
+            	<input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        &nbsp
+    	<button type="submit" class="btn btn-default">Submit</button>
+	</form> 
+	
+	<script type="text/javascript">
+    $(function () {
+        $('#datepicker1').datepicker();
+        $('#datepicker2').datepicker({
+            useCurrent: false //Important! See issue #1075
+        });
+        $("#datepicker1").on("dp.change", function (e) {
+            $('#datepicker2').data("DatePicker").minDate(e.date);
+        });
+        $("#datepicker2").on("dp.change", function (e) {
+            $('#datepicker1').data("DatePicker").maxDate(e.date);
+        });
+    });
+</script>
+
+<p> </p>
+
+<table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Status</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Due</th>
+        <th>Received</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Fullfilled</td>
+        <td>Doe</td>
+        <td>john@example.com</td>
+        <td>john@example.com</td>
+        <td>Doe</td>
+      </tr>
+      <tr>
+        <td>Mary</td>
+        <td>Moe</td>
+        <td>mary@example.com</td>
+        <td>Doe</td>
+        <td>Doe</td>
+      </tr>
+      <tr>
+        <td>July</td>
+        <td>Dooley</td>
+        <td>july@example.com</td>
+        <td>Doe</td>
+        <td>Doe</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+{% endblock %}
+
+
+

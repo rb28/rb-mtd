@@ -7,9 +7,8 @@
 
 {% block content %}
 	<h2>
-		Step 3: Exchange Authorization Code for Access Tokens
+		OAuth tokens - step 4
 	</h2>
-	<p>Exchanges authorisation code for access token</p> 
 	<hr>
 	{% with messages = get_flashed_messages() %}
 	{% if messages %}
@@ -26,18 +25,16 @@
 			{{ form.access_token.label }}<br>
 			{{ form.access_token(size=50, value=access_token['access_token']) }}<br>
 
-			{{ form.refresh_token.label }}<br>
-			{{ form.refresh_token(size=50, value=access_token['refresh_token']) }}<br>
+			{{ form.token_type.label }}<br>
+			{{ form.token_type(size=50, value=access_token['token_type']) }}<br>
 
             {{ form.expires_in.label }}<br>
 			{{ form.expires_in(size=50, value=access_token['expires_in']) }}<br>
 
-			{{ form.scope.label }}<br>
-			{{ form.scope(size=50, value=access_token['scope']) }}<br>
+			{{ form.refresh_token.label }}<br>
+			{{ form.refresh_token(size=50, value=access_token['refresh_token']) }}<br>
 			
-            {{ form.token_type.label }}<br>
-			{{ form.token_type(size=50, value=access_token['token_type']) }}<br>
-
+            
 
 		</p>
 

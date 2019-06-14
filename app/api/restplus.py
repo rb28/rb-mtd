@@ -4,7 +4,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 
 api = Api(version='1.0', title='RB-MTD API',
-          description='A simple demo of a Flask RestPlus powered API')
+          description='Flask RestPlus powered API')
 
 ns = api.namespace('vat', description='Operations related to VAT')
 api.add_namespace(ns)

@@ -12,6 +12,14 @@ class Config(object):
     
     ADMINS = ['roger.bovell@gmail.com']
 
+    OAUTH_CREDENTIALS = { 
+            'hmrc': {'id':'7vHS_1WzmOZ4xESM5j7UB85lY2Ua',
+                     'secret':'7743c54a-eaee-4ff8-85da-5155b0c851c0'
+            },
+            
+            'server': {'token':'a0b87dae9f4bc023a1cf921df144eb5'}
+    }
+    
 
 class Development(Config):
     """Configurations for Development."""

@@ -24,13 +24,8 @@ def register_extensions(app):
     login.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
-    api.init_app(app)
-
+    api.init_app(app)    
     
-    
-    
-
-
     return None
 
 
@@ -50,6 +45,8 @@ def register_blueprints(app):
     app.register_blueprint(mtd_bp, url_prefix = '/mtd')
     
     return None
+
+
 
 
 from app import models

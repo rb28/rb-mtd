@@ -5,16 +5,56 @@ from urllib.parse import urlparse, parse_qs
 from flask import flash, render_template, redirect, url_for
 from app.main import bp
 from app.main.forms import OAuthForm, TokenForm, RedirectForm, TestForm
+from app.auth.forms import LoginForm
 from flask import session
 from flask import request
+from app.utils import OAuthSignIn
 
 
-@bp.route('/index')
+
+
+
+@bp.route('/index', methods=['GET','POST'])
+
+def index():
+    form = LoginForm()
+    
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        return redirect(url_for('auth.login')) 
+
+    return render_template('/index.html', form=form)
+
+
+
+@bp.route('/home')
+#@login_required
 
 def home():
+    title = 'Main Home'
+    return render_template('/home.html', title=title)
 
-    return render_template('/index.html')
 
+
+
+@bp.route('/authorize/<provider>')
+def oauth_authorize(provider):
+    #if not current_user.is_anonymous():
+    #    return redirect(url_for('home'))
+    oauth = OAuthSignIn.get_provider(provider)
+    return oauth.authorize()
+
+
+
+@bp.route('/callback/<provider>')
+#@login_required
+def oauth_callback(provider):
+    #if not current_user.is_anonymous():
+    #    return redirect(url_for('home'))
+    oauth = OAuthSignIn.get_provider(provider)
+    access_token = oauth.callback()
+    return render_template('oauth_callback.html', title='OAuth-callback', access_token=access_token)
 
 
 @bp.route('/helloworld', methods=['GET', 'POST'])
@@ -27,6 +67,8 @@ def helloworld():
     data = res.json()
 
     return render_template( 'helloworld.html', title='RB-MTD',data=data)
+
+
 
 
    
@@ -146,15 +188,57 @@ def exchange_authcode(code):
 
 #test org userid: 843628495777
 #test org password: qfryqgVborki
-# access token: 536e6181972ead3fd4dd374ac687227
-# refresh token: 5e4b9b2772a39742205b4cc92c2bd58
+# access token: 536e6181972ead3fd4dd374ac687227 | c7dcfe8c383973d4cc4d0db3b9e62af
+# refresh token: 5e4b9b2772a39742205b4cc92c2bd58 | 3b439f79f132de28330b3ad9d89df44
 
 
 
-@bp.route('/retrieve/obligations', methods=['GET','POST'])
+
+
+@bp.route('/refresh/access_token', methods=['GET', 'POST'])
+def refresh_token():
+    
+    form = TokenForm()
+
+    #if form.validate_on_submit():
+
+    #    return redirect('refresh_token.html', )
+
+    clientId = '7vHS_1WzmOZ4xESM5j7UB85lY2Ua'
+    clientSecret = '7743c54a-eaee-4ff8-85da-5155b0c851c0'
+    refresh_token = '5e4b9b2772a39742205b4cc92c2bd58'
+    refresh_token_url = 'https://test-api.service.hmrc.gov.uk/oauth/token'
+
+    payload = {"grant_type": "refresh_token",
+               "client_id": clientId,
+               "client_secret": clientSecret, 
+               "refresh_token": refresh_token
+              }
+
+    refresh_token_response = requests.post(refresh_token_url, data=payload)
+    access_token = refresh_token_response.json()
+
+    if refresh_token_response.status_code != 200:
+        flash('{}: {} - {}'.format(refresh_token_request.status_code, access_token['error'], access_token['error_description']))
+        access_token = ''
+        return render_template('refresh_token.html', title='MTD-OAuth', form=form, access_token=access_token)
+
+    return render_template('refresh_token.html', title='MTD-OAuth', form=form, access_token=access_token)
+
+    
+
+
+
+
+
+
+
+@bp.route('/retrieve/vat_obligations', methods=['GET','POST'])
 def vat_obligations():
     base_url = 'https://test-api.service.hmrc.gov.uk'
-    endpoint = ''    
+    endpoint = '/organisations/vat/{vrn}/obligations'    
+
+    return none
 
 
 
@@ -163,6 +247,62 @@ def vat_obligations():
 
 
 
+
+@bp.route('/retrieve/vat_liabilities', methods=['GET','POST'])
+def vat_liabilities():
+    base_url = 'https://test-api.service.hmrc.gov.uk'
+    endpoint = '/organisations/vat/{vrn}/obligations'    
+
+    return none
+
+
+
+
+
+
+
+
+@bp.route('/retrieve/vat_payments', methods=['GET','POST'])
+def vat_payments():
+    base_url = 'https://test-api.service.hmrc.gov.uk'
+    endpoint = '/organisations/vat/{vrn}/payments'    
+
+    return none
+
+
+
+
+
+
+@bp.route('/upload/vat_return', methods=['GET','POST'])
+def upload_vat_return():
+    title = 'MTD File Upload'
+    return render_template('vat_upload.html', title=title)
+
+
+
+
+
+
+
+
+
+@bp.route('/submit/vat_return', methods=['GET','POST'])
+def submit_vat_return():
+    enpoint = '/organisations/vat/{vrn}/returns'
+
+
+
+
+
+
+
+
+
+
+@bp.route('/view/vat_return', methods=['GET','POST'])
+def view_vat_return():
+    enpoint = '/organisations/vat/{vrn}/returns/{periodKey}'
 
 
 

@@ -1,11 +1,23 @@
 # -*- coding: utf-8 -*-
 """Database module, including the SQLAlchemy database object and DB-related utilities."""
 from .extensions import db, login
+from datetime import datetime
 
 # Alias common SQLAlchemy names
 Column = db.Column
 relationship = db.relationship
 
+
+class OAuthConsumerMixin(object):
+    """docstring for ClassName"""
+    def __init__(self, arg):
+        super(ClassName, self).__init__()
+        self.arg = arg
+        
+
+class TimestampMixin(object):
+    created = db.Column( db.DateTime, nullable=False, default=datetime.utcnow)
+    updated = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
 class CRUDMixin(object):
     """Mixin that adds convenience methods for CRUD (create, read, update, delete) operations."""

@@ -1,12 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>{{ title }}</title>
-</head>
-<body>
-	<h2>
-		Step 1: Request Authorisation
-	</h2>
+{% extends "layouts/main_base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+		Test 
+{% endblock %}
+
+{% block content %}
+	<h2>OAuth request - step 1</h2>
+    <p>Grants RBH-MTD-API permission to interact with HMRC on your behalf</p> 
 	<hr>
 	{% with messages = get_flashed_messages() %}
 	{% if messages %}
@@ -26,5 +27,4 @@
 
 		<p>{{ form.submit() }}</p>
 	</form>
-</body>
-</html>
+{% endblock %}

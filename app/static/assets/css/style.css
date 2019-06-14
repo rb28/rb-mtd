@@ -7,8 +7,10 @@
 /* ==== Google font ==== */
 @import url('https://fonts.googleapis.com/css?family=Lato:400,300,700,900');
 
+
+
 body {
-  background-color: #f2f2f2;
+    background-color: #f2f2f2;
     font-family: 'Lato', sans-serif;
     font-weight: 300;
     font-size: 16px;
@@ -188,8 +190,8 @@ h2.subtitle {
 
 /* footer */
 #footer {
-	background: #fd680e;
-	padding: 20px 0 5px;
+  background: #fd680e;
+	padding: 20px 0 5px;  
 }
 
 p.copyright {
@@ -204,3 +206,6 @@ p.copyright {
 .credits a{
     color: #fff;
 }
+
+
+

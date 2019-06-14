@@ -1,11 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>{{ title }}</title>
-</head>
-<body>
+{% extends "layouts/main_base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+		Test 
+{% endblock %}
+
+{% block content %}
 	<h2>
-		Step 2: Retrieve Authorization Code
+		OAuth exchange - step 2
 	</h2>
 	<hr>
 	<form action="" method="post">
@@ -17,5 +19,4 @@
 
 		<p>{{ form.submit() }}</p>
 	</form>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "layouts/main_base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+		File Upload
+{% endblock %}
+
+{% block content %}
+
+
+<form class="form-inline" method="post" enctype = "multipart/form-data" action="{{ url_for('main.upload_return', period=period) }}">
+	
+	<div class="form-group">
+		<div class="input-group input-file" name="file">
+    		<input type="text" class="form-control" placeholder='Choose a file...' />			
+            <span class="input-group-btn">
+        		<button class="btn btn-default btn-choose" type="button">Choose</button>
+    		</span>
+	    </div >
+	    <button type="submit" class="btn btn-primary">Save</button>
+	</div>
+	
+</form>
+
+
+<p></p>
+
+        <form>
+        	
+        	<table class="table table-bordered" style="width: 60%">
+            	<colgroup>
+            		<col span="1" style="width: 70%;">
+                    <col span="1" style="width: 30%;">
+            	</colgroup> 
+            	{% for i in rows %}
+            	<tr style="height:5px;">
+            		<td>
+            			{{ rows[i]['desc'] }}
+            		</td>
+            		<td>
+            			{{ rtn[rows[i]['id'] ] }}
+            		</td>
+            	</tr>
+            	{% endfor %}
+            	<tr>
+            		<td></td>
+            		<td>
+            			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Declaration</button>
+            		</td>
+
+            	</tr>
+            </table>
+
+            
+
+
+
+
+        </form>
+        
+    <script type="text/javascript">
+    	$('#myModal').on('shown.bs.modal', function () {
+  				$('#myInput').trigger('focus')
+		})
+
+        function bs_input_file() {
+				$(".input-file").before(
+					function() {
+						if ( ! $(this).prev().hasClass('input-ghost') ) {
+							var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+							element.attr("name",$(this).attr("name"));
+							element.change(function(){
+								element.next(element).find('input').val((element.val()).split('\\').pop());
+							});
+							$(this).find("button.btn-choose").click(function(){
+								element.click();
+							});
+							$(this).find("button.btn-reset").click(function(){
+								element.val(null);
+								$(this).parents(".input-file").find('input').val('');
+							});
+							$(this).find('input').css("cursor","pointer");
+							$(this).find('input').mousedown(function() {
+								$(this).parents('.input-file').prev().click();
+								return false;
+							});
+							return element;
+						}
+					}
+				);
+			}
+
+		$(function() {
+			bs_input_file();
+		});
+
+    </script>
+
+    <!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="myModalLabel">Declaration</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        Please note: On submission of this VAT return, you are making a legal declaration
+	        that the information provided is true and complete. A false declaration can result
+	        in prosecution.
+
+	      </div>
+	      <div class="modal-footer justify-content-between">
+	      	<div class="form-check form-check-inline">
+	    		<input type="checkbox" class="form-check-input float-left" id="exampleCheck1">
+	    		<label class="form-check-label" for="exampleCheck1">Declare</label>
+	  		
+	            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+{% endblock %}

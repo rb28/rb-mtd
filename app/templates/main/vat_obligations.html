@@ -39,27 +39,49 @@
 	
 	
 
-    <p> </p>
+    <p></p>
 
-    <table class="table table-bordered">
-    <thead>
-      <tr>
-        {% for col in colnames %}
-        <td>{{ col }}</td>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for row in my_data  %}
-          <tr>
-            {% for col in colnames %}
-            <td>{{ row[col] }}</td>
-            {% endfor %}
-          </tr>
-      {% endfor %}
-     
-    </tbody>
-    </table>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+               {% for message in messages %}
+               <li> {{ message }} </li>
+               {% endfor %}
+            </ul>
+        
+        {% else %}
+
+            <table class="table table-bordered">
+            <thead>
+              <tr>
+                {% for i in colnames %}
+                <th>{{ colnames[i] }}</th>
+                {% endfor %}
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in my_data  %}
+                  <tr>
+                    {% for i in colnames %}
+                    <td>{{ row[colnames[i]] }}</td>
+                    {% endfor %}
+                    {% if row['status'] == 'O' %}
+                    <td><a href="{{ url_for('main.upload_return', period=row['periodKey'] )}}"><span style="color:blue">Submit return</span></a></td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                  </tr>
+
+              {% endfor %}
+             
+            </tbody>
+            </table>
+
+        {% endif %}
+
+    {% endwith %}
 
     <script type="text/javascript">
     $(function () {

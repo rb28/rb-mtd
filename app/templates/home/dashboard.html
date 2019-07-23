@@ -1,0 +1,22 @@
+{% extends "layouts/main_base.html" %}
+
+{% block title %}title{% endblock %}
+
+{% block sidenav %}  
+	  
+{% endblock %}
+
+{% block header %}Test{% endblock %}
+
+{% block content %}
+    <h1>Admin Dashboard</h1>
+    <h3>For administrators only!</h3>
+    <hr class="intro-divider">
+              
+     <div class="container">
+     	{{ current_user.username }}
+     	{{ current_user.is_admin }}
+        {{ current_user.active }}
+
+     </div>      
+{% endblock %}

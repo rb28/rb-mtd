@@ -1,33 +1,15 @@
 from flask import current_app
-from rauth import OAuth2Service
+from rauth import OAuth2Service, OAuth2Session
 from flask import redirect, url_for
-from flask import request
-import json
+from flask import request, session
+import json, time
+import datetime
 
 from urllib.parse import (quote, urlencode, parse_qsl, urlsplit, urlunsplit, urljoin)
 
 FORM_URLENCODED = 'application/x-www-form-urlencoded'
 ENTITY_METHODS = ('POST', 'PUT', 'PATCH')
 OPTIONAL_OAUTH_PARAMS = ('oauth_callback', 'oauth_verifier')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -42,11 +24,15 @@ class OAuthSignIn(object):
         credentials = current_app.config['OAUTH_CREDENTIALS'][provider_name]
         self.client_id = credentials['id']
         self.client_secret = credentials['secret']
-    
+        
+
     def authorize(self):
         pass
 
     def callback(self):
+        pass
+    
+    def get_data(self):
         pass
 
     def get_callback_url(self):
@@ -70,13 +56,15 @@ class HmrcSignIn(OAuthSignIn):
     """docstring for ClassName"""
     def __init__(self):
         super(HmrcSignIn, self).__init__('hmrc')
+        
         self.service = OAuth2Service(
             name='hmrc',
             client_id=self.client_id,
             client_secret=self.client_secret,
-            authorize_url='https://test-api.service.hmrc.gov.uk/oauth/authorize',
-            access_token_url='https://test-api.service.hmrc.gov.uk/oauth/token',
-            base_url='https://test-api.service.hmrc.gov.uk/'
+            authorize_url='https://api.service.hmrc.gov.uk/oauth/authorize', #urljoin(self.base_url, 'oauth/authorize')
+            access_token_url='https://api.service.hmrc.gov.uk/oauth/token',
+            base_url='https://api.service.hmrc.gov.uk/', #urljoin(self.base_url, 'oauth/token') 
+            
         )
 
     
@@ -90,16 +78,125 @@ class HmrcSignIn(OAuthSignIn):
 
     
     def callback(self):
-        def decode_json(payload):
-            return json.loads(payload.decode('utf-8'))
-
+        ''' Returns access token '''
         if 'code' not in request.args:
             return None
-        oauth_session = self.service.get_auth_session(
-            data={'code': request.args['code'],
-                  'grant_type': 'authorization_code',
-                  'redirect_uri': self.get_callback_url()},
-            decoder= decode_json
+
+        access_token_response = self.service.get_raw_access_token(
+            data={'grant_type': 'authorization_code',
+                  'code': request.args.get('code'),
+                  'redirect_uri': self.get_callback_url()}
         )
-        access_token = oauth_session
-        return access_token
+        
+        r = access_token_response.json()
+        
+        for k, v in r.items():
+            if k in ("expires_in"):
+                session['tokenTTL'] =  int(time.time()) + int(v)
+            else:
+                session[k] = v
+
+
+        return session['access_token']
+
+
+
+    def get_data(self, endpoint, params):
+
+        self.url = urljoin('https://api.service.hmrc.gov.uk', endpoint)
+        self.headers =headers = {"Accept":"application/vnd.hmrc.1.0+json",
+                                 "Scope": "read:vat"}
+        self.params = params
+
+        def expired():
+            if int(time.time()) > session['tokenTTL']:
+                return True
+            else:
+                return False
+
+        if not expired():
+            access_token = session['access_token']
+        else:
+            refresh_token_response = self.service.get_raw_access_token(
+                data={'grant_type': 'refresh_token',
+                      'refresh_token': session['refresh_token']
+                    }
+                )
+
+            r = refresh_token_response.json()
+            for k, v in r.items():
+                if k in ("expires_in"):
+                    session['tokenTTL'] =  int(time.time()) + int(v)
+                else:
+                	session[k] = v
+            
+
+            access_token = session['access_token']
+
+        s = OAuth2Session(client_id=self.client_id, client_secret=self.client_secret, access_token=access_token)
+
+
+        response = s.request(method='GET', url=self.url, bearer_auth=True, headers=headers, params=params)
+
+            
+        return response
+
+
+    def refresh_token(self):
+
+        refresh_token_response = self.service.get_raw_access_token(
+            data={'grant_type': 'refresh_token',
+                  'refresh_token': session['refresh_token']
+                 }
+        )
+        
+        r = refresh_token_response.json()
+        
+        for k, v in r.items():
+            if k in ("expires_in"):
+                session['tokenTTL'] =  int(time.time()) + int(v)
+            else:
+                session[k] = v
+
+
+        return session['refresh_token']
+
+
+    def post_data(self, endpoint, data):
+
+        self.url = urljoin('https://api.service.hmrc.gov.uk', endpoint)
+        self.headers =headers = {"Accept":"application/vnd.hmrc.1.0+json",
+                                 "Scope": "write:vat"}
+        self.data = data
+
+
+        def expired():
+            if int(time.time()) > session['tokenTTL']:
+                return True
+            else:
+                return False
+
+        if not expired():
+            access_token = session['access_token']
+        else:
+            refresh_token_response = self.service.get_raw_access_token(
+                data={'grant_type': 'refresh_token',
+                      'refresh_token': session['refresh_token']
+                    }
+                )
+
+            r = refresh_token_response.json()
+            for k, v in r.items():
+                if k in ("expires_in"):
+                    session['tokenTTL'] =  int(time.time()) + int(v)
+                else:
+                    session[k] = v
+            
+
+            access_token = session['access_token']
+
+        s = OAuth2Session(client_id=self.client_id, client_secret=self.client_secret, access_token=access_token)
+        response = s.request(method='POST', url=self.url, bearer_auth=True, headers=headers, data=data,)
+        
+
+        return response

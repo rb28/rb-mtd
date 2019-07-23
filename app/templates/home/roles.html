@@ -1,0 +1,84 @@
+{% extends "layouts/main_base.html" %}
+
+{% block title %}title{% endblock %}
+
+{% block sidenav %}  
+	  
+{% endblock %}
+
+{% block header %}Test{% endblock %}
+
+{% block content %}
+	<h1>Admin Dashboard</h1>
+	<h3>For administrators only!</h3>
+
+	<hr class="intro-divider">
+    
+    <div class="container">
+    	<div class="row">
+    		<div class="col-md-10">
+      			<br>
+      			<a href="{{ url_for('home.add_role') }}" class="btn btn-info pull-right add-row">
+              <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp; Add Role</a>
+            </a>
+    		</div>
+  		</div>
+        <p></p>
+        {% if roles %}
+  		<div class="row">
+    		<div class="col-md-10">
+    			<form action="" method="post" name="OrganisationForm">
+    				{{ form.hidden_tag() }}
+    			<table class="table table-bordered" id="editableTable">
+			        <thead class="table-blue">
+			          <tr>
+			            <th width="25%">Name</th>
+			            <th width="35%">Description</th>
+			            <th width="15%">User count</th>
+			            <th width="25%">Edit</th>
+			          </tr>
+			        </thead>
+			        <tbody>
+			        	{% for role in roles %}
+			        		<tr data-id="{{ role.id }}">
+			        			<td data-field="name">{{ role.name }}</td>
+			        			<td data-field="description">{{ role.description }}</td>
+			        			<td>{% if role.users %}
+                      			{{ role.users.count('*') }}
+                    		{% else %}
+                    				0
+                    		{% endif %}
+                    </td>
+			        			<td>
+			        				<a href="{{ url_for('home.edit_role', id=role.id) }}"  class="btn btn-sm btn-default edit" title="Edit" >
+                						<span class="glyphicon glyphicon-edit"></span>
+              						</a>
+               						<a href="" class="btn btn-sm btn-default" title="Delete">
+                						<span class="glyphicon glyphicon-trash"></span>
+              						</a>
+			        			</td>
+			        		</tr>
+
+			        	{% endfor %}
+			        </tbody>
+
+            </table>
+          </form>
+    		</div>
+    	</div>
+    	{% else %}
+    		<div style="text-align: center">
+    		<h3> No roles have been added. </h3>
+
+    	{% endif %}
+    </div>       
+    
+   
+<!--- Modal --->    
+
+        
+{% endblock %}
+
+{% block script %}{% endblock %}
+
+

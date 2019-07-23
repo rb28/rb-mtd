@@ -10,7 +10,8 @@ class Config(object):
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
-    ADMINS = ['roger.bovell@gmail.com']
+    
+    
 
     OAUTH_CREDENTIALS = { 
             'hmrc': {'id':'7vHS_1WzmOZ4xESM5j7UB85lY2Ua',
@@ -25,6 +26,15 @@ class Development(Config):
     """Configurations for Development."""
     
     DEBUG = True
+    MTD_API = {
+                'endpoints': {'base_url': 'https://test-api.service.hmrc.gov.uk/',
+                              'obligations': '/organisations/vat/{vrn}/obligations',
+                              'liabilities': '/organisations/vat/{vrn}/liabilities',
+                              'payments': '/organisations/vat/{vrn}/payments',
+                              'returns': '/organisations/vat/{vrn}/returns'}
+    }
+
+
 
 class Testing(Config):
     """Configurations for Testing, with a separate test database."""
@@ -36,6 +46,8 @@ class Production(Config):
     """Configurations for Production."""
     DEBUG = False
     TESTING = False
+    MTD_API = {'base_url': 'api.service.hmrc.gov.uk'}
+
 
 
 app_config = {

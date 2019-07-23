@@ -1,0 +1,73 @@
+{% extends "layouts/main_base.html" %}
+
+
+
+{% block title %}
+    title
+{% endblock %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+    <h3>For administrators only!</h3>
+    <hr class="intro-divider">
+
+<div class="content-section">
+ <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <div class="center">
+            {% if add_role %}
+                <h1>Add Role</h1>
+            {% else %}
+                <h1>Edit Role</h1>
+            {% endif %}
+            <br/>
+            
+        </div>
+        <div class="row">
+          <div class="col-md-10">
+
+
+        {% if add_role %}
+            <form action="{{ url_for('home.add_role') }}" class="form" method="post" >
+        {% else %}
+            <form action="{{ url_for('home.edit_role', id=id) }}" class="form" method="post" >
+        {% endif %}
+              {{ form.hidden_tag() }}
+              <table class="table table-bordered" id="editableTable">
+                  <thead class="table-blue">
+                    <tr>
+                      <th width="30%">Name</th>
+                      <th width="70%">Description</th>
+                      
+                    </tr>
+                  </thead>
+                  <tr>
+                    <td>
+                      <div class="form-group">
+                        <div>
+                          {{ form.name(class="form-control", horizontal_columns=('lg', 6, 3)) }} 
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="form-group">
+                        <div>
+                          {{ form.description(class="form-control", horizontal_columns=('lg', 6, 3)) }} 
+                        </div>
+                      </div>
+
+                    </td>
+                    
+                  </tr>
+              </table>
+            <button type="submit" class="btn btn-info pull-right edit-row" >Save Changes</button>
+          </form>
+          </div>
+        </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

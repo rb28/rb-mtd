@@ -9,7 +9,7 @@
 {% block header %}Test{% endblock %}
 
 {% block content %}
-<h2>VAT Obligations</h2>
+<h2>VAT Payments</h2>
 <p>The .table-bordered class adds borders to a table:  </p>  
 
 	<form class="form-inline" action="" method="post">
@@ -38,28 +38,42 @@
 	</form> 
 	
 	
+    <p></p>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+               {% for message in messages %}
+               <li> {{ message }} </li>
+               {% endfor %}
+            </ul>
+        
+        {% else %}
 
-    <p> </p>
+        <table class="table table-bordered">
+            <thead>
+              <tr>
+                {% for i in colnames %}
+                <th>{{ colnames[i] }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in my_data  %}
+                  <tr>
+                    {% for i in colnames %} 
+                        <td>{{ row[colnames[i]] }}</td>
+                    {% endfor %}
+                    
+                  </tr>
 
-    <table class="table table-bordered">
-    <thead>
-      <tr>
-        {% for col in colnames %}
-        <td>{{ col }}</td>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for row in my_data  %}
-          <tr>
-            {% for col in colnames %}
-            <td>{{ row[col] }}</td>
-            {% endfor %}
-          </tr>
-      {% endfor %}
-     
-    </tbody>
-    </table>
+              {% endfor %}
+             
+            </tbody>
+        </table>
+        {% endif %}
+
+    {% endwith %}
 
     <script type="text/javascript">
     $(function () {

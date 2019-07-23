@@ -42,6 +42,86 @@
       }
       .row.content {height:auto;} 
     }
+
+      .signup-form{
+        width: 500px;
+        margin: 0 auto;
+        padding: 30px 0;
+    }
+
+    .signup-form h2{
+    color: #636363;
+        margin: 0 0 15px;
+    position: relative;
+    text-align: center;
+    }
+  .signup-form h2:before, .signup-form h2:after{
+    content: "";
+    height: 2px;
+    width: 30%;
+    background: #d4d4d4;
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+  } 
+  .signup-form h2:before{
+    left: 0;
+  }
+  .signup-form h2:after{
+    right: 0;
+  }
+    .signup-form .hint-text{
+    color: #999;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+    .signup-form form{
+    color: #999;
+    border-radius: 3px;
+      margin-bottom: 15px;
+        background: #f2f3f7;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+    }
+
+    .signup-form .form-group{
+      margin-bottom: 20px;
+    }
+
+    .signup-form input[type="checkbox"]{
+      margin-top: 3px;
+    }
+
+    .signup-form .btn{        
+          font-size: 16px;
+          font-weight: bold;    
+      min-width: 140px;
+          outline: none !important;
+      }
+
+    .signup-form .row div:first-child{
+      padding-right: 10px;
+    }
+
+    .signup-form .row div:last-child{
+      padding-left: 10px;
+    }     
+      
+    .signup-form a{
+      color: #fff;
+      text-decoration: underline;
+    }
+    
+    .signup-form a:hover{
+      text-decoration: none;
+    }
+    .signup-form form a{
+      color: #5cb85c;
+      text-decoration: none;
+    } 
+    .signup-form form a:hover{
+      text-decoration: underline;
+    }  
   </style>
 </head>
 
@@ -61,28 +141,48 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       
       <ul class="nav navbar-nav navbar-left">
-        <li class="active"><a href="#">Home</a></li>
+        {% if current_user.is_admin %}
+          <li class="active"><a href="{{ url_for('home.dashboard') }}">Home</a></li>
+          <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<span class="caret">
+              </span></a>
+              <ul class="dropdown-menu" role="menu">
+                  <li><a href="{{ url_for('home.organisations') }}">Manage organisations</a></li>
+                  <li><a href="{{ url_for('home.list_roles') }}">Manage roles</a></li>
+                  <li><a href="{{ url_for('home.list_users') }}">Manage users</a></li>
+              </ul>
+          </li>
+        {% else %}
+          <li><a href="{{ url_for('home.dashboard') }}">Dashboard</a></li>
+        {% endif %}
+        
         <li><a href="#">About</a></li>
-        <li><a href="#">Projects</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="#">Help</a></li>
         <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">VAT (MTD) API <span class="caret">
               </span></a>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
+              <li><a href="{{ url_for('main.oauth_authorize', provider='hmrc') }}">Request authorisation</a></li>
+              <li><a href="{{ url_for('main.oauth_refresh', provider='hmrc') }}">Refresh token</a></li>
               <li><a href="#">Something else here</a></li>
               <li class="divider"></li>
-              <li><a href="#">Separated link</a></li>
+              <li><a href="{{ url_for('main.vat_obligations') }}">Retrieve VAT obligations</a></li>
+              <li><a href="{{ url_for('main.vat_liabilities') }}">Retrieve VAT liabilities</a></li>
+              <li><a href="{{ url_for('main.vat_payments') }}">Retrieve VAT payments</a></li>
               <li class="divider"></li>
-              <li><a href="#">One more separated link</a></li>
+              <li><a href="#">Submit VAT return for period</a></li>
+              <li><a href="#">View VAT return for period</a></li>
             </ul>
         </li>
       </ul>
       
       
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="{{ url_for('main.index')}}"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+        {% if current_user.is_authenticated %}
+        <li><a>Welcome: {{ current_user.first_name }} </a></li>
+        {% endif %}
+        <li><a href="{{ url_for('home.index') }}"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+        
       </ul>
       
     </div>

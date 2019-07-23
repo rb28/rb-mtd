@@ -1,0 +1,100 @@
+{% extends "layouts/main_base.html" %}
+
+{% block title %}title{% endblock %}
+
+{% block sidenav %}  
+	  
+{% endblock %}
+
+{% block header %}
+	<h1>Admin Dashboard</h1>
+	<h3>For administrators only!</h3>
+{% endblock %}
+
+{% block content %}
+	
+    
+    <div class="container">
+    	<div class="row">
+    		<div class="col-md-10">
+      			<br>
+      			<a href="{{ url_for('home.register_user') }}" class="btn btn-info pull-right add-row">
+              <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp; Add User</a>
+            </a>
+    		</div>
+  		</div>
+        <p></p>
+        {% if users %}
+  		<div class="row">
+    		<div class="col-md-10">
+    			<form action="" method="post" name="OrganisationForm">
+    				
+    			<table class="table table-bordered" id="editableTable">
+			        <thead class="table-blue">
+			          <tr>
+			            <th width="15%">Username</th>
+			            <th width="20%">Name</th>
+			            <th width="15%">Email</th>
+						<th width="10%">Organisation</th>
+						<th width="15%">Role</th>
+						<th width="10%">Active</th>
+			            <th width="15%">Edit</th>
+			          </tr>
+			        </thead>
+			        <tbody>
+			        	{% for user in users %}
+			        		{% if user.is_admin %}
+		                    <tr style="background-color: #aec251; color: white;">
+		                        <td> <i class="fa fa-key"></i>{{ user.username }} </td>
+		                        <td> N/A </td>
+		                        <td> N/A </td>
+		                        <td> N/A </td>
+		                        <td> N/A </td>
+		                        <td> N/A </td>
+		                        <td> N/A </td>
+		                    </tr>
+                			{% else %}
+			        		<tr data-id="{{ user.id }}">
+			        			<td data-field="name">{{ user.username }}</td>
+			        			<td data-field="description">{{ user.first_name }} {{ user.last_name }}</td>
+			        			<td data-field="email">{{ user.email }}</td>
+			        			<td data-field="organisation">{% if user.organisation %}
+                          										{{ user.organisation.name }}
+                        									  {% else %}
+                         										 -
+                        									  {% endif %}</td>
+ 								<td data-field="role">{% if user.roles %}
+                          								{{ user.roles }}
+                        							  {% else %}
+                         								 -
+                        							  {% endif %}</td>
+ 								<td data-field="active">{{ user.active }}</td>
+			        			<td>
+			        				<a href="{{ url_for('home.assign_user', id=user.id) }}"  class="btn btn-sm btn-default edit" title="Edit" >
+                						<span class="glyphicon glyphicon-edit"></span>
+              						</a>
+               						<a href="" class="btn btn-sm btn-default" title="Delete">
+                						<span class="glyphicon glyphicon-trash"></span>
+              						</a>
+			        			</td>
+			        		</tr>
+			        		{% endif %}
+			        	{% endfor %}
+			        </tbody>
+
+            </table>
+          </form>
+    		</div>
+    	</div>
+    	{% endif %}
+    </div>       
+    
+    
+
+    
+<!--- Modal --->    
+
+        
+{% endblock %}
+
+{% block script %}{% endblock %}

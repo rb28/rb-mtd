@@ -118,6 +118,13 @@ a.navbar-brand:hover {
     color: #ddd !important;
 }
 
+
+.navbar-blue {
+  background-color: DodgerBlue
+}
+
+
+
 /* Header */
 
 #header {	
@@ -206,6 +213,56 @@ p.copyright {
 .credits a{
     color: #fff;
 }
+
+
+.table-condensed{
+  font-size: 12px;
+}
+
+
+
+/* ------  Editable Table Row  ------ */
+
+.row {
+      margin-bottom: 20px;
+    }
+       
+    .button.button-small {
+      height: 30px;
+      line-height: 30px;
+      padding: 0px 10px;
+    }
+    
+    td input[type=text],
+    td select {
+      width: 100%;
+      height: 30px;
+      margin: 0;
+      padding: 2px 8px;
+    }
+    
+    th:last-child {
+      text-align: right;
+    }
+    
+    td:last-child {
+      text-align: right;
+    }
+    
+    td:last-child .button {
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      padding: 0px;
+      margin-bottom: 0px;
+      margin-right: 5px;
+      background-color: #FFF;
+    }
+    
+    td:last-child .button .fa {
+      line-height: 30px;
+      width: 30px;
+    }
 
 
 

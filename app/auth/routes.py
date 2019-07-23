@@ -1,40 +1,53 @@
-from flask import flash, render_template, redirect, request, url_for
+from flask import flash, render_template, redirect, request, url_for, session
 from werkzeug.urls import url_parse
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 from app import db
 from app.auth import bp
 from app.auth.forms import LoginForm, RegistrationForm, \
     ResetPasswordRequestForm, ResetPasswordForm
-from app.models import User
+from app.models import User, Role, Organisation
+
 
 
 
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    form = LoginForm()
+    
+    form=LoginForm()
+    
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
+        
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
-            return redirect(url_for('auth.login'))
-        login_user(user, remember=form.remember_me.data)
+            return redirect(url_for('home.index'))
+        login_user(user,remember=False, duration=300)
+
+        session['org']=user.organisation.code
+        session['vrn']=user.organisation.vrn
+
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
+            next_page = url_for('home.dashboard')
         return redirect(next_page)
-    return render_template('auth/login.html', title='Sign In', form=form)
+
+    else:
+            flash('Invalid username or password.')
+
+    return render_template('home/landing.html', title='Sign In', form=form)
 
 
 @bp.route('/logout')
+
 def logout():
     logout_user()
+    session.clear()
     return redirect(url_for('main.index'))
 
 
 @bp.route('/register', methods=['GET', 'POST'])
+
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))

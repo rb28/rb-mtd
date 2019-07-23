@@ -25,9 +25,8 @@ def register_extensions(app):
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     api.init_app(app)    
-    
+                
     return None
-
 
 
 def register_blueprints(app):
@@ -39,10 +38,10 @@ def register_blueprints(app):
     app.register_blueprint(auth_bp, url_prefix = '/auth')
 
     from app.main import bp as main_bp
-    app.register_blueprint(main_bp)
+    app.register_blueprint(main_bp, url_prefix = '/main')
 
-    from app.main import bp as mtd_bp
-    app.register_blueprint(mtd_bp, url_prefix = '/mtd')
+    from app.home import bp as home_bp
+    app.register_blueprint(home_bp, url_prefix = '/home')
     
     return None
 

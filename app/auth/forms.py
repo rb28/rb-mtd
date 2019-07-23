@@ -31,6 +31,8 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField(
         'Repeat Password', validators=[DataRequired(),
                                            EqualTo('password')])
+    active = BooleanField('Active')
+    is_admin = BooleanField('Is Admin')
     submit = SubmitField('Register')
 
     def validate_username(self, username):

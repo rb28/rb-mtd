@@ -1,0 +1,77 @@
+{% extends "layouts/main_base.html" %}
+
+{% block title %}title{% endblock %}
+
+{% block sidenav %}  
+	  
+{% endblock %}
+
+{% block header %}Test{% endblock %}
+
+{% block content %}
+    <h1>Admin Dashboard</h1>
+    <h3>For administrators only!</h3>
+
+    
+    <hr class="intro-divider">
+    
+    <div class="container">
+    	<div class="row">
+    		<div class="col-md-10">
+      			<br>
+      			<a href="{{ url_for('home.add_organisation') }}" class="btn btn-info pull-right add-row">
+              <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp; Add Organisation</a>
+            </a>
+    		</div>
+  		</div>
+      <p></p>
+      {% if organisations %}
+  		<div class="row">
+    		<div class="col-md-10">
+    			<form action="" method="post" name="OrganisationForm">
+    				{{ form.hidden_tag() }}
+    			<table class="table table-bordered" id="editableTable">
+			        <thead class="table-blue">
+			          <tr>
+			            <th>Code</th>
+			            <th>Vat Reg. No.</th>
+			            <th>Name</th>
+			            <th>Edit</th>
+			          </tr>
+			        </thead>
+			        <tbody>
+			        	{% for org in organisations %}
+			        		<tr data-id="{{ org.id }}">
+			        			<td data-field="code">{{ org.code }}</td>
+			        			<td data-field="vrn">{{ org.vrn }}</td>
+			        			<td data-field="name">{{ org.name }}</td>
+			        			<td>
+			        				<a href="{{ url_for('home.edit_organisation', id=org.id) }}"  class="btn btn-sm btn-default edit" title="Edit" >
+                						<span class="glyphicon glyphicon-edit"></span>
+              				</a>
+               				<a href="" class="btn btn-sm btn-default" title="Delete">
+                						<span class="glyphicon glyphicon-trash"></span>
+              				</a>
+			        			</td>
+			        		</tr>
+
+			        	{% endfor %}
+			        </tbody>
+
+            </table>
+          </form>
+    		</div>
+    	</div>
+      {% else %}
+        <div style="text-align: center">
+        <h3> No organisations have been added. </h3>
+
+      {% endif %}
+    </div>       
+    
+<!--- Modal --->    
+
+        
+{% endblock %}
+
+{% block script %}{% endblock %}

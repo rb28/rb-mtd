@@ -1,10 +1,10 @@
 from flask import current_app
 from rauth import OAuth2Service, OAuth2Session
 from flask import redirect, url_for
-from flask import request, session
+from flask import request, session, render_template
 import json, time
 import datetime
-
+import requests
 from urllib.parse import (quote, urlencode, parse_qsl, urlsplit, urlunsplit, urljoin)
 
 FORM_URLENCODED = 'application/x-www-form-urlencoded'
@@ -89,19 +89,23 @@ class HmrcSignIn(OAuthSignIn):
         )
         
         r = access_token_response.json()
-        
+
+        if not r:
+            return redirect( url_for('errors.500', '500'))     
+            
         for k, v in r.items():
             if k in ("expires_in"):
                 session['tokenTTL'] =  int(time.time()) + int(v)
             else:
                 session[k] = v
-
+            
+            
 
         return session['access_token']
 
 
 
-    def get_data(self, endpoint, params):
+    def get_data(self, endpoint, params=None):
 
         self.url = urljoin('https://api.service.hmrc.gov.uk', endpoint)
         self.headers =headers = {"Accept":"application/vnd.hmrc.1.0+json",
@@ -109,11 +113,13 @@ class HmrcSignIn(OAuthSignIn):
         self.params = params
 
         def expired():
+            
             if int(time.time()) > session['tokenTTL']:
                 return True
             else:
                 return False
 
+            
         if not expired():
             access_token = session['access_token']
         else:
@@ -134,7 +140,6 @@ class HmrcSignIn(OAuthSignIn):
             access_token = session['access_token']
 
         s = OAuth2Session(client_id=self.client_id, client_secret=self.client_secret, access_token=access_token)
-
 
         response = s.request(method='GET', url=self.url, bearer_auth=True, headers=headers, params=params)
 
@@ -165,10 +170,8 @@ class HmrcSignIn(OAuthSignIn):
     def post_data(self, endpoint, data):
 
         self.url = urljoin('https://api.service.hmrc.gov.uk', endpoint)
-        self.headers =headers = {"Accept":"application/vnd.hmrc.1.0+json",
-                                 "Scope": "write:vat"}
         self.data = data
-
+        
 
         def expired():
             if int(time.time()) > session['tokenTTL']:
@@ -195,8 +198,17 @@ class HmrcSignIn(OAuthSignIn):
 
             access_token = session['access_token']
 
+            
+        headers = {"Accept":"application/vnd.hmrc.1.0+json",
+                       "Content-Type": "application/json",
+                       "Authorization": "Bearer %s" % access_token
+                    }
+                                 
         s = OAuth2Session(client_id=self.client_id, client_secret=self.client_secret, access_token=access_token)
-        response = s.request(method='POST', url=self.url, bearer_auth=True, headers=headers, data=data,)
+        
+
+
+        response = s.post(self.url, json=self.data, headers=headers)
         
 
         return response

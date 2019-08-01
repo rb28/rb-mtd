@@ -2,16 +2,21 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block header %}
-		File Upload
+<div class="row">
+    <div class="box green pull-left">{{session['orgname']}} 
+    </div>
+    <div class="info-box"><h1>VAT File Upload</h1></div>
+</div>
 {% endblock %}
 
 {% block content %}
-
+<p></p>
 
 <form class="form-inline" method="post" enctype = "multipart/form-data" action="{{ url_for('main.upload_return', period=period) }}">
 	
 	<div class="form-group">
 		<div class="input-group input-file" name="file">
+			<input type="hidden" id="periodKey" name="periodKey" value="{{ period }}">
     		<input type="text" class="form-control" placeholder='Choose a file...' />			
             <span class="input-group-btn">
         		<button class="btn btn-default btn-choose" type="button">Choose</button>
@@ -25,7 +30,7 @@
 
 <p></p>
 
-        <form>
+        <form action="{{url_for('main.submit_vat_return') }}">
         	
         	<table class="table table-bordered" style="width: 60%">
             	<colgroup>
@@ -33,7 +38,8 @@
                     <col span="1" style="width: 30%;">
             	</colgroup> 
             	{% for i in rows %}
-            	<tr style="height:5px;">
+            	{% if i == 1 %}
+                <tr style="display:none;">
             		<td>
             			{{ rows[i]['desc'] }}
             		</td>
@@ -41,17 +47,29 @@
             			{{ rtn[rows[i]['id'] ] }}
             		</td>
             	</tr>
+
+            	{% else %}
+            	<tr style="height:5px;">
+            		<td>
+            			{{ rows[i]['desc'] }}
+            		</td>
+            		<td>
+            			{{ rtn[rows[i]['id']] }}
+            		</td>
+            	</tr>
+            	{% endif %}
             	{% endfor %}
             	<tr>
-            		<td></td>
             		<td>
             			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Declaration</button>
+            		</td>
+            		<td>
+            			<button type="submit" class="btn btn-primary" >Submit</button>
             		</td>
 
             	</tr>
             </table>
-
-            
+  
 
 
 

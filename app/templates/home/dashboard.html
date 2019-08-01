@@ -6,17 +6,39 @@
 	  
 {% endblock %}
 
-{% block header %}Test{% endblock %}
+{% block header %}
+<div class="row">
+
+    {% if current_user.is_admin %}
+    
+        <div class="box red pull-left">{{session['orgname']}}
+        </div>
+        <div class="info-box"><h1> Admin Dashboard</h1></div>
+    
+    {% else %}
+        <div class="box green pull-left">{{session['orgname']}} 
+        </div>
+        <div class="info-box"><h1> User Dashboard</h1></div>
+        
+    {% endif %}
+    
+
+</div>        <!-- /.info-box-content -->
+{% endblock %}
 
 {% block content %}
-    <h1>Admin Dashboard</h1>
+    
+          <!-- /.info-box -->
     <h3>For administrators only!</h3>
     <hr class="intro-divider">
               
-     <div class="container">
-     	{{ current_user.username }}
-     	{{ current_user.is_admin }}
-        {{ current_user.active }}
+    <div class="container">
+     	
+        
 
-     </div>      
+    </div>    
+
+
+
+   
 {% endblock %}

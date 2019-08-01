@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 5d8ad67cd122
+Revision ID: 420e8717cf56
 Revises: 
-Create Date: 2019-07-18 14:20:20.132138
+Create Date: 2019-07-25 17:15:50.296595
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '5d8ad67cd122'
+revision = '420e8717cf56'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -50,6 +50,7 @@ def upgrade():
     sa.Column('first_name', sa.String(length=30), nullable=True),
     sa.Column('last_name', sa.String(length=30), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=True),
+    sa.Column('is_admin', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['organisation_id'], ['organisations.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('username'),
@@ -62,17 +63,18 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('organisation_id', sa.Integer(), nullable=False),
     sa.Column('period_key', sa.String(length=4), nullable=True),
-    sa.Column('vat_due_sales', sa.Numeric(precision=10, scale=2), nullable=True),
-    sa.Column('vat_due_acquisitions', sa.Numeric(precision=10, scale=2), nullable=True),
-    sa.Column('total_vat_due', sa.Numeric(precision=10, scale=2), nullable=True),
-    sa.Column('vat_reclaimed_curr_period', sa.Numeric(precision=10, scale=2), nullable=True),
-    sa.Column('net_vat_due', sa.Numeric(precision=10, scale=2), nullable=True),
-    sa.Column('total_value_sales_ex_vat', sa.Numeric(precision=10, scale=2), nullable=True),
-    sa.Column('total_value_purchases_ex_vat', sa.Numeric(precision=10, scale=2), nullable=True),
-    sa.Column('total_value_goods_supplied_ex_vat', sa.Numeric(precision=10, scale=2), nullable=True),
-    sa.Column('total_value_acquisitions_ex_vat', sa.Numeric(precision=10, scale=2), nullable=True),
+    sa.Column('vat_due_sales', sa.String(length=10), nullable=True),
+    sa.Column('vat_due_acquisitions', sa.String(length=10), nullable=True),
+    sa.Column('total_vat_due', sa.String(length=10), nullable=True),
+    sa.Column('vat_reclaimed_curr_period', sa.String(length=10), nullable=True),
+    sa.Column('net_vat_due', sa.String(length=10), nullable=True),
+    sa.Column('total_value_sales_ex_vat', sa.String(length=10), nullable=True),
+    sa.Column('total_value_purchases_ex_vat', sa.String(length=10), nullable=True),
+    sa.Column('total_value_goods_supplied_ex_vat', sa.String(length=10), nullable=True),
+    sa.Column('total_acquisitions_ex_vat', sa.String(length=10), nullable=True),
     sa.Column('finalised', sa.Boolean(), nullable=True),
-    sa.Column('is_submitted', sa.Boolean(), nullable=True),
+    sa.Column('submitted_on', sa.DateTime(), nullable=True),
+    sa.Column('submitted_by', sa.String(length=50), nullable=True),
     sa.ForeignKeyConstraint(['organisation_id'], ['organisations.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

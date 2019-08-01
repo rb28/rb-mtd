@@ -1,0 +1,27 @@
+{% extends "layouts/main_base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+<div class="row">
+    <div class="box green pull-left">{{session['orgname']}} 
+    </div>
+    <div class="info-box"><h1>VAT Return</h1></div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<p>{{ test }}</p>
+
+
+    {% if errors %}
+        {% for e in errors %}
+            <!-- Do something with the message -->
+          <span style="color: red;">{{ e['code'] }} - {{ e['message'] }}</span>  
+
+        {% endfor %}
+    {% endif %}
+
+    
+
+{% endblock %}

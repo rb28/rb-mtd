@@ -3,6 +3,7 @@ from flask import  abort, flash, render_template, redirect, request, url_for, g,
 from werkzeug.urls import url_parse
 from flask_login import login_required, current_user
 from app import db
+
 from app.auth.forms import LoginForm
 from app.home.forms import OrganisationForm, UserRegisterForm, UserAssignForm, RoleForm
 from app.home import bp
@@ -33,14 +34,13 @@ def index():
 
 
 
-@bp.route('/dashboard')
+@bp.route('/dashboard', methods=['GET','POST'])
 @login_required
 def dashboard():
     """
     Prevent non-admins from accessing the page
     """
-        
-
+    
     return render_template('home/dashboard.html', title="Dashboard")
 
 # organisation Views
@@ -115,6 +115,27 @@ def assign_user(id):
     return render_template('home/user.html', id=id,
                            user=user, form=form,
                            title='Assign User')
+
+
+
+@bp.route('/users/delete/<int:id>', methods=['GET','POST'])
+@login_required
+def delete_user(id):
+
+    '''
+    Delete a user from the database
+    '''
+    check_admin()
+
+    user = User.query.get_or_404(id)
+    user.delete()
+
+    flash('You have successfully deleted the user.')
+
+    # redirect to the users page
+    return redirect(url_for('home.list_users'))
+
+    return render_template('home/dashboard.html')
 
 
 

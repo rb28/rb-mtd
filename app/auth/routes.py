@@ -25,6 +25,7 @@ def login():
         login_user(user,remember=False, duration=300)
 
         session['org']=user.organisation.code
+        session['orgname']=user.organisation.name
         session['vrn']=user.organisation.vrn
 
         next_page = request.args.get('next')

@@ -18,8 +18,8 @@ def make_shell_context():
 #def create_user():
 #    org = Organisation(code='100',name='SA')
 #    user=User(username='admin', email='admin@example.com', password='password123', 
-#    	organisation_id=1, active=True, is_admin=True)
+#        organisation_id=1, active=True, is_admin=True)
 #    user.roles.append(Role(name='Admin'))
-
+#    db.session.add(org)
 #    db.session.add(user)
 #    db.session.commit()

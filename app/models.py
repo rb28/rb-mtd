@@ -176,26 +176,40 @@ class Vat_return(SurrogatePK, Model, TimestampMixin):
     organisation_id = reference_col('organisations', nullable=False)
     
     period_key = Column(db.String(4))
-    vat_due_sales = Column(db.Numeric(10,2))
-    vat_due_acquisitions = Column(db.Numeric(10,2))
-    total_vat_due = Column(db.Numeric(10,2))
-    vat_reclaimed_curr_period = Column(db.Numeric(10,2))
-    net_vat_due = Column(db.Numeric(10,2))
-    total_value_sales_ex_vat = Column(db.Numeric(10,2))
-    total_value_purchases_ex_vat = Column(db.Numeric(10,2))
-    total_value_goods_supplied_ex_vat = Column(db.Numeric(10,2))
-    total_value_acquisitions_ex_vat = Column(db.Numeric(10,2))
+    vat_due_sales = Column(db.String(10))
+    vat_due_acquisitions = Column(db.String(10))
+    total_vat_due = Column(db.String(10))
+    vat_reclaimed_curr_period = Column(db.String(10))
+    net_vat_due = Column(db.String(10))
+    total_value_sales_ex_vat = Column(db.String(10))
+    total_value_purchases_ex_vat = Column(db.String(10))
+    total_value_goods_supplied_ex_vat = Column(db.String(10))
+    total_acquisitions_ex_vat = Column(db.String(10))
     finalised = Column(db.Boolean(), default=True)
     is_submitted = Column(db.Boolean(), default=False)
     submitted_on = Column(db.DateTime, nullable = True)
-#   approved_by =
-#   submitted_by =  
+    submitted_by = Column(db.String(50), nullable=True)
 
-    def __init__(self, code, **kwargs):
-        db.Model.__init__(self, code=code, **kwargs)
+    def __init__(self, organisation_id, period_key, **kwargs):
+        db.Model.__init__(self, organisation_id=organisation_id, period_key=period_key, **kwargs)
 
 
     def is_submitted(self):
         """Active or non active user (required by flask-login)"""
         return self.is_submitted
 
+
+class Vat_receipt(SurrogatePK, Model):
+    __tablename__ = 'vat_receipts'
+
+    organisation_id = reference_col('organisations', nullable=False)
+    period_key = Column(db.String(4))
+    processing_date = Column(db.DateTime, nullable = True)
+    payment_indicator = Column(db.String(10))
+    form_bundle_number = Column(db.String(12))
+    charge_ref_number = Column(db.String(12))
+
+
+    def __init__(self, organisation_id, period_key, processing_date, **kwargs):
+        db.Model.__init__(self, organisation_id=organisation_id, period_key=period_key, processing_date=processing_date, **kwargs)
+        

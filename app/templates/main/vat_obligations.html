@@ -6,11 +6,17 @@
 	  
 {% endblock %}
 
-{% block header %}Test{% endblock %}
+{% block header %}
+<div class="row">
+    <div class="box green pull-left">{{session['orgname']}} 
+    </div>
+    <div class="info-box"><h1>VAT Obligations</h1></div>
+</div>
+{% endblock %}
 
 {% block content %}
-<h2>VAT Obligations</h2>
-<p>The .table-bordered class adds borders to a table:  </p>  
+
+<p></p>  
 
 	<form class="form-inline" action="" method="post">
 
@@ -70,7 +76,7 @@
                     {% if row['status'] == 'O' %}
                     <td><a href="{{ url_for('main.upload_return', period=row['periodKey'] )}}"><span style="color:blue">Submit return</span></a></td>
                     {% else %}
-                    <td></td>
+                    <td><a href="{{ url_for('main.view_return', period=row['periodKey'] )}}"><span style="color:blue">View return</span></a></td>
                     {% endif %}
                   </tr>
 

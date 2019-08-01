@@ -6,11 +6,17 @@
 	  
 {% endblock %}
 
-{% block header %}Test{% endblock %}
+{% block header %}
+<div class="row">
+    <div class="box green pull-left">{{session['orgname']}} 
+    </div>
+    <div class="info-box"><h1>VAT Liabilities</h1></div>
+</div>
+{% endblock %}
 
 {% block content %}
-<h2>VAT Liabilities</h2>
-<p>The .table-bordered class adds borders to a table:  </p>  
+
+<p></p>  
 
 	<form class="form-inline" action="" method="post">
 
